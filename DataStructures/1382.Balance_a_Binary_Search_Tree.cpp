@@ -1,4 +1,4 @@
-// Problem Link: https://leetcode.com/problems/check-completeness-of-a-binary-tree/description/
+// Problem Link: https://leetcode.com/problems/balance-a-binary-search-tree/description/
 
 #include <iostream>
 #include <stack>
