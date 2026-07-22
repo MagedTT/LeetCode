@@ -1,57 +1,61 @@
 // Problem Link: https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/description/
 
 #include <iostream>
+#include <vector>
 #include <unordered_map>
-#include <unordered_set>
 
 using namespace std;
 
-typedef unordered_map<int, unordered_set<int>> graph;
+typedef unordered_map<int, vector<int>> graph;
 
 void add_edge(graph &graph, int from, int to)
 {
-    graph[from].insert(to);
+    graph[from].push_back(to);
 }
 
-void dfs(graph &graph, int node, unordered_set<int> &visited)
+void dfs(graph &graph, int node, vector<bool> &visited)
 {
-    visited.insert(node);
+    visited[node] = true;
 
     for (auto &a : graph[node])
-    {
-        if (!visited.count(a))
+        if (!visited[a])
             dfs(graph, a, visited);
-    }
 }
 
-vector<int> killProcess(vector<int> &pid, vector<int> &ppid, int kill)
+class Solution
 {
-    graph graph;
+public:
+    int countComponents(int nodes, vector<vector<int>> &edges)
+    {
+        graph graph;
+        for (auto &a : edges)
+            add_edge(graph, a[0], a[1]);
 
-    int sz = (int)pid.size();
-    for (int i = 0; i < sz; ++i)
-        add_edge(graph, ppid[i], pid[i]);
+        vector<bool> visited(nodes);
+        int ret = 0;
+        for (int i = 0; i < nodes; ++i)
+        {
+            if (!visited[i])
+            {
+                ++ret;
+                dfs(graph, i, visited);
+            }
+        }
 
-    unordered_set<int> visited;
-
-    dfs(graph, kill, visited);
-
-    return vector<int>(visited.begin(), visited.end());
-}
+        return ret;
+    }
+};
 
 int main()
 {
-    // Test-Case
-    vector<int> pid{5234, 2234, 6234, 3234, 123123, 1234, 4234};
-    vector<int> ppid{0, 5234, 2234, 2234, 5234, 5234, 1234};
+    int n = 5;
+    vector<vector<int>> edges{{0, 1}, {1, 2}, {3, 4}};
+    // vector<vector<int>> edges{{0, 1}, {1, 2}, {2, 3}, {3, 4}};
 
-    int k;
-    cin >> k;
+    Solution solution;
 
-    vector<int> result = killProcess(pid, ppid, k);
+    int result = solution.countComponents(n, edges);
 
-    for (auto &a : result)
-        cout << a << ' ';
-    cout << '\n';
+    cout << result << '\n';
     return 0;
 }
